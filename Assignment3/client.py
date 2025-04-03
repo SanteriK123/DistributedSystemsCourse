@@ -17,8 +17,8 @@ def startClient():
     # Create a socket that connects to the server
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # ip = input("Give the server ip to connect to:")
-    client.connect(("localhost", 5050))
+    ip = input("Give the server ip to connect to: ")
+    client.connect((ip, 5050))
 
     # Set nickname
     nickname = input("Enter your nickname: ")
@@ -31,7 +31,7 @@ def startClient():
     # Start the thread
     threading.Thread(target=receiveMessages, args=(client,), daemon=True).start()
 
-    print("Type directly to command line to send message to all people in channel")
+    print("'/msg *message*' - > Sends public message to everyone in the channel")
     print("'/join *channel* -> Switches to channel or create if it doesnt exist'")
     print("'/private *user* *message*' -> Send private message to user")
     print("'/exit' -> Exit and disconnect from the chat")
@@ -47,7 +47,7 @@ def startClient():
             print("Disconnecting.")
             client.send("/exit".encode("utf-8"))
             break
-        else:
+        elif message.startswith("/msg "):
             # Normal chat message
             client.send(message.encode("utf-8"))
 

@@ -49,14 +49,16 @@ def handleClient(client):
                     channel = newChannel
                     sendMessage(f"{nickname} switched to {channel}.", channel)
                     print(f"{nickname} switched to {channel}.")
-            if message.startswith("/private"):
+            elif message.startswith("/private"):
                 prefix, recipient, privateMessage = message.split(" ", 2)
                 handlePrivateMessage(client, recipient, privateMessage)
+            elif message.startswith("/msg "):
+                newMessage = message.split(" ", 1)[1]
+                print(newMessage)
+                sendMessage(f"{nickname}: {newMessage}", channel, client)
             elif message == "/exit":
                 print(f"User {client} has left the chat")
                 break
-            else:
-                sendMessage(f"{nickname}: {message}", channel, client)
     except:
         print("An error occured.")
     finally:
@@ -85,6 +87,7 @@ def removeClient(client):
 
 def serverStart():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("localhost", 5050))
     server.listen()
 
